@@ -19,7 +19,6 @@ class AtomicCounter:
 		
 		with self._lock: # blocking operation
 			self.value += 1
-			print ("incremented counter to {}".format(self.value))
 			return True
 	
 	def decrement(self):

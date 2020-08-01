@@ -19,7 +19,6 @@ class MemoryException(Exception):
 
 
 class Decorators:
-	
 	@staticmethod
 	def runtime_exception_decorator(func):
 		@contextmanager
