@@ -1,10 +1,6 @@
-import time
 from xmlrpc.server import SimpleXMLRPCServer
 
-from exception import disclose_exception_decorator, runtime_exception_decorator
-
 from container import docker_environment_decorator
-
 
 
 class RemoteCodeExecutionThreadedServer(SimpleXMLRPCServer):
@@ -19,93 +15,46 @@ class RemoteCodeExecutionThreadedServer(SimpleXMLRPCServer):
 		self.serve_forever()
 
 
-@docker_environment_decorator
-# @disclose_exception_decorator
-# @runtime_exception_decorator
-def add(x, y):
-	if type(x) is not int and type(y) is not int:
-		return 0
-	return x + y
+# function signature definitions (implementation are in functions.py file)
 
 
 @docker_environment_decorator
-# @disclose_exception_decorator
-# @runtime_exception_decorator
+def add(x, y) -> int:
+	""" adding 2 numbers and returning sum"""
+	pass
+
+
+@docker_environment_decorator
 def eval(expression):
-	return eval(expression)
+	""" evaluating expressions """
+	pass
 
 
 @docker_environment_decorator
-# @disclose_exception_decorator
-# @runtime_exception_decorator
-def divide(x, y):
-	if type(x) is not int and type(y) is not int:
-		return 0
-	if y == 0:
-		# you can't divide in 0
-		return 0 # confuse the user
-	return x / y
+def divide(x, y) -> int:
+	""" dividing x by y and return answer"""
+	pass
 
 
 @docker_environment_decorator
-# @disclose_exception_decorator
-# @runtime_exception_decorator
-def multiply(x, y):
-	if type(x) is not int and type(y) is not int:
-		return 0
-	return x * y
+def multiply(x, y) -> int:
+	""" multiply x by y and return answer """
+	pass
 
 
 @docker_environment_decorator
-# @disclose_exception_decorator
-# @runtime_exception_decorator
 def sleep(n=0):
-	print("sleeping")
-	time.sleep(n)
-	print("finished sleeping")
-	return "finished sleeping"
+	""" sleep for n seconds (imitate busy computation) """
+	pass
 
 
 if __name__ == '__main__':
 	HOST = "localhost"
 	PORT = 8000
 	
-	## TODO: MAKE SURE DOCKER IS RUNNING!!!
-	
 	server = RemoteCodeExecutionThreadedServer(HOST, PORT)
 	
-	
-	# ### SAFE PICKLING only available during server startup ###
-	#
-	# from importlib import reload
-	# import pickle
-	# class DummyObject: pass
-	#
-	# # safely load files
-	# functions = {
-	# 	"add": open("functions/add", "wb").write(pickle.dumps(add)),
-	# 	"divide": open("functions/divide", "wb").write(pickle.dumps(divide)),
-	# 	"multiply": open("functions/multiply", "wb").write(pickle.dumps(multiply)),
-	# 	"eval": open("functions/eval", "wb").write(pickle.dumps(eval)),
-	# }
-	#
-	# # change file permissions to 400 (only read)
-	# for f in functions.keys():
-	# 	os.chmod("/functions/{}", 400)  # change permissions to 400
-	#
-	# pickle = DummyObject()
-	# os = DummyObject()
-	# sys = DummyObject()
-	#
-	# reload(pickle)
-	# reload(os)
-	# reload(sys)
-	#
-	# print ("pickle {}".format(pickle))
-	# print ("os {}".format(os))
-	# print ("sys {}".format(sys))
-	
-	# register loaded
+	# register functions
 	server.register_function(add, "add")
 	server.register_function(eval, "eval")
 	server.register_function(divide, "divide")

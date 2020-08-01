@@ -1,62 +1,40 @@
 # CREATING A CONTAINER SHOULD BE AN ATOMIC OPERATION
 
 import docker
-from exception import runtime_exception_decorator
 from atomic import AtomicCounter
-from os import getcwd
+from os import getcwd, chmod
 
 # Docker container configurations
 PYTHON_DOCKER_IMAGE = "python:3"
 # PYTHON_DOCKER_IMAGE = "python:3.7-alpine"
 CONTAINER_MEMORY_LIMIT = '4m'  # 4 megabytes
+RUNTIME_TIMOUT = 15 # 5 seconds timout
 
 MAX_NUM_CONTAINERS = 3
 container_counter = AtomicCounter(MAX_NUM_CONTAINERS)
 
 FUNCTIONS_FILE = "functions.py"
+# read-only
+chmod(FUNCTIONS_FILE, 400)
 
 client = docker.from_env()
 
 
 def docker_environment_decorator(func):
 	
-	#@runtime_exception_decorator
 	def wrapped_with_decorator(*args):
-		
-		#serialized = yaml.dump({'py_code': func(*args)})
-		
-		# import yaml
-		#run_pycode = 'python -c """print({})""" '.format(func(*args))
-		
-		#serialized = json.dumps(func(*args))
-		
-		# import inspect
-		# print(inspect.getsource(func))
-		#
-		# run_pycode = 'python -c """print({})""" '.format(func(*args))
-		#
 		
 		print ("host {} {} {}".format(FUNCTIONS_FILE, func.__name__, " ".join([str(arg) for arg in args])))
 		
 		run_pycode = 'python {} {} {}'.format(FUNCTIONS_FILE, func.__name__, " ".join([str(arg) for arg in args]))
 		
-		#install_pip = "python -m pip install yaml"
-		
 		if not container_counter.increment():
 			return "Cannot execute code, max number of resources exceeded. Try again later..."
 		
-		print("running container to execute code...")
+		print("running container #{} to execute code...".format(container_counter.get()))
 		
-		# container = client.containers.create(image=PYTHON_DOCKER_IMAGE)
-		# container.start()
-		# exit_code, result = container.exec_run(cmd="echo hello world")
-		# result = result.decode("utf-8")
-		#
-		# container.kill()
-		# print("result from container.exec_run {}".format(exit_code, result))
-		# container_counter.decrement()
-		#
-		# return {"result": result, "exit_code": exit_code}
+	
+		## run this inside thread and schedule kill
 		
 		result = client.containers.run(
 			image=PYTHON_DOCKER_IMAGE,
@@ -67,12 +45,12 @@ def docker_environment_decorator(func):
 			network_disabled=True,
 			# read only permission!
 			volumes={'{}/{}'.format(getcwd(),FUNCTIONS_FILE): {'bind': '/functions.py', 'mode': 'ro'}}
-		).decode('ascii')
+		).decode('ascii').strip()
 		
-		print("result from container.exec_run {}'".format(result))
 		container_counter.decrement()
+		print("result from container.exec_run {}'".format(result))
 	
-		return {"result": result}
+		return result
 	
 	return wrapped_with_decorator
 

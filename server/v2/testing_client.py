@@ -11,5 +11,25 @@ if __name__ == "__main__":
 	print("Calling multiply(42,21) method on server. Result {}".format(proxy.multiply(42, 21)))
 
 	print("Calling divide(64,8) method on server. Result {}".format(proxy.divide(64, 8)))
+	print("Calling add(4,2) method on server. Result {}".format(proxy.add(4, 2)))
+	
+	print("Calling multiply(42,21) method on server. Result {}".format(proxy.multiply(42, 21)))
+	
+	print("Calling divide(64,8) method on server. Result {}".format(proxy.divide(64, 8)))
+	print("Calling add(4,2) method on server. Result {}".format(proxy.add(4, 2)))
+	
+	print("Calling multiply(42,21) method on server. Result {}".format(proxy.multiply(42, 21)))
+	
+	print("Calling divide(64,8) method on server. Result {}".format(proxy.divide(64, 8)))
+	print("Calling add(4,2) method on server. Result {}".format(proxy.add(4, 2)))
+	
+	print("Calling multiply(42,21) method on server. Result {}".format(proxy.multiply(42, 21)))
+	
+	print("Calling divide(64,8) method on server. Result {}".format(proxy.divide(64, 8)))
+	print("Calling add(4,2) method on server. Result {}".format(proxy.add(4, 2)))
+	
+	print("Calling multiply(42,21) method on server. Result {}".format(proxy.multiply(42, 21)))
+	
+	print("Calling divide(64,8) method on server. Result {}".format(proxy.divide(64, 8)))
 
 
