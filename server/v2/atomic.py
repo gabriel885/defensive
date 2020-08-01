@@ -11,9 +11,7 @@ class AtomicCounter:
 		self._lock = threading.Lock()
 	
 	def increment(self):
-		"""Atomically increment the counter by num (default 1) and return the
-		new value.
-		"""
+		"""Atomically increment the counter by 1"""
 		if self.value >= self.max_increment:
 			return False
 		
@@ -22,7 +20,7 @@ class AtomicCounter:
 			return True
 	
 	def decrement(self):
-		
+		"""Atomically decrement the counter by 1"""
 		if self.value <= 0:
 			return
 		
@@ -31,4 +29,5 @@ class AtomicCounter:
 		return
 	
 	def get(self):
+		"""Get the current counter"""
 		return self.value
