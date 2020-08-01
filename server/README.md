@@ -3,7 +3,14 @@
 Demonstrating the difficulty of protecting remote python server against DDoS attacks and Remote Code Execution (RCE) attacks.
 
 After applying defensive programming principles and following security
-best practices, I came up with a more reliable solution.
+best practices, I came up with a more reliable solution. 
+
+## Important note - 
+I could not manage to protect the server against DoS on the socket layer. 
+Due to the fact that packets arrive regardless of the filtration, in other words 
+the filtration itself from non-legitimate packets is causing the bottleneck which
+causes DoS.
+
 
 ## Requirements
 
@@ -22,6 +29,7 @@ Unix machine (recommended)
     -   restricted memory usage / cpu time / os and network access
     -   limited private server tokens to access services
     -   No serialization methods involved
+    -   Authorisation required
 
 # How to run server
 
