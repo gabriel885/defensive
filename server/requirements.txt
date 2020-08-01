@@ -2,4 +2,3 @@
 
 ## v2 requirements
 docker
-jwt

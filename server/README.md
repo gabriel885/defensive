@@ -5,11 +5,11 @@ Demonstrating the difficulty of protecting remote python server against DDoS att
 After applying defensive programming principles and following security
 best practices, I came up with a more reliable solution. 
 
-## Important note - 
-I could not manage to protect the server against DoS on the socket layer. 
-Due to the fact that packets arrive regardless of the filtration, in other words 
-the filtration itself from non-legitimate packets is causing the bottleneck which
-causes DoS.
+## Important note  
+I could not manage to protect the server against DoS on the socket layer, 
+due to the fact that packets filtration itself for non-legitimate packets is the main 
+contributor of DoS attack. 
+Those, defending DoS can be mainly prevented on lower levels (CDN/LB/DPI).
 
 
 ## Requirements
@@ -37,3 +37,5 @@ Unix machine (recommended)
 pip install -r requirements.txt
 python {version folder}/server.py
 ```
+
+Copyrighted to Gabriel Munits. Please do not share material.
