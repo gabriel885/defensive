@@ -8,6 +8,7 @@ Researching client-server vulnerabilities:
 Creating defensive solutions:
 
 - sandboxed environments
+  - serialization avoidance
 - authentication methods
 - observability measures
   - TTL
