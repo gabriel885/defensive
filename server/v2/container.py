@@ -8,7 +8,6 @@ from atomic import AtomicCounter
 # Docker container configurations
 PYTHON_DOCKER_IMAGE = "python:3"
 CONTAINER_MEMORY_LIMIT = '4m'  # 4 megabytes
-RUNTIME_TIMOUT = 15  # 5 seconds timout
 
 MAX_NUM_CONTAINERS = 3
 container_counter = AtomicCounter(MAX_NUM_CONTAINERS)
