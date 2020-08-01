@@ -1,0 +1,6 @@
+## v1 does not make use of external libraries
+
+## v2 requirements
+docker
+jwt
+PyYAML
