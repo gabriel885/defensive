@@ -2,7 +2,7 @@ import threading
 
 
 class AtomicCounter:
-	"""An atomic, thread-safe incrementing counter with automatic decrementation after timout """
+	"""An atomic, thread-safe incrementing counter"""
 	
 	def __init__(self, max_increment=5):
 		"""Initialize a new atomic counter to given initial value (default 0)."""
