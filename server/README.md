@@ -21,7 +21,7 @@ Unix machine (recommended)
     -   isolated and monitored code excution environment
     -   restricted memory usage / cpu time / os and network access
     -   limited private server tokens to access services
-    -   safe serialization using PyYaml
+    -   No serialization methods involved
 
 # How to run server
 

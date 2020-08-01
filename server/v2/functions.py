@@ -1,48 +1,27 @@
+import signal
 import sys
 import time
+from contextlib import contextmanager
 
 # NOTE - printed values will be returned. Don't user print() explicitly.
+
 DEFAULT_REASON_EXCEPTION = "Error occurred"
-FUNCTION_TIMEOUT = 5 # timeout in seconds
-MAX_RETURN_OBJECT_SIZE = 30 # limit max response size in bytes
+FUNCTION_TIMEOUT = 5  # timeout in seconds
+MAX_RETURN_OBJECT_SIZE = 30  # limit max response size in bytes
 
 
-class TimeoutException(Exception): pass
+class TimeoutException(Exception):
+	pass
+
+
+class MemoryException(Exception):
+	pass
 
 
 class Decorators:
 	
 	@staticmethod
-	def disclose_exception_decorator(func):
-		def wrapp_function_with_exception(*args, **kwargs):
-			try:
-				res = func(*args, **kwargs)
-				
-				# don't allow to return None (XML-Server complains)
-				if res is None:
-					return DEFAULT_REASON_EXCEPTION
-				
-				# check result result type
-				if type(res) is not int:
-					return DEFAULT_REASON_EXCEPTION
-				
-				# check return result size
-				if sys.getsizeof(res) > MAX_RETURN_OBJECT_SIZE:
-					return DEFAULT_REASON_EXCEPTION
-				
-				return res
-			except Exception as reason:
-				return DEFAULT_REASON_EXCEPTION  # disclose reason to route
-			pass
-		
-		return wrapp_function_with_exception
-	
-	@staticmethod
 	def runtime_exception_decorator(func):
-		import signal
-		from contextlib import contextmanager
-		
-		
 		@contextmanager
 		def time_limit(seconds):
 			def signal_handler(signum, frame):
@@ -54,7 +33,7 @@ class Decorators:
 				yield
 			finally:
 				signal.alarm(0)
-			
+		
 		def wrap_function_with_timeout(*args, **kwargs):
 			try:
 				with time_limit(FUNCTION_TIMEOUT):
@@ -62,11 +41,12 @@ class Decorators:
 			except TimeoutException as e:  # raise timeout exception
 				print(e)
 			pass
-			
+		
 		return wrap_function_with_timeout
+	
 	pass
-	
-	
+
+
 @Decorators.runtime_exception_decorator
 def add(x, y):
 	x = int(x)
@@ -111,13 +91,17 @@ funcs = {
 	"eval": eval,
 }
 
-
 try:
-	print(funcs[sys.argv[1]](*sys.argv[2:]))
+	res = funcs[sys.argv[1]](*sys.argv[2:])
+	if sys.getsizeof(res) > MAX_RETURN_OBJECT_SIZE:
+		raise MemoryException("Memory response exceeded max allowed {} bytes".format(MAX_RETURN_OBJECT_SIZE))
+	print(res)
 	
+except MemoryException as e:
+	print(e)
+
 except TimeoutException as e:
 	print(e)
-	
+
 except Exception as e:
 	print(DEFAULT_REASON_EXCEPTION)
-	#print(e)
