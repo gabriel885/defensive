@@ -1,4 +1,4 @@
-# Defensive Programming Seminar
+# Defensive Systems 
 
 Researching client-server vulnerabilities:
 
