@@ -17,7 +17,7 @@ class AtomicCounter:
 		if self.value >= self.max_increment:
 			return False
 		
-		with self._lock: # blocking operation
+		with self._lock:  # blocking operation
 			self.value += 1
 			return True
 	

@@ -1,13 +1,14 @@
 # CREATING A CONTAINER SHOULD BE AN ATOMIC OPERATION
 
+from os import chmod, getcwd
+
 import docker
 from atomic import AtomicCounter
-from os import getcwd, chmod
 
 # Docker container configurations
 PYTHON_DOCKER_IMAGE = "python:3"
 CONTAINER_MEMORY_LIMIT = '4m'  # 4 megabytes
-RUNTIME_TIMOUT = 15 # 5 seconds timout
+RUNTIME_TIMOUT = 15  # 5 seconds timout
 
 MAX_NUM_CONTAINERS = 3
 container_counter = AtomicCounter(MAX_NUM_CONTAINERS)
@@ -20,11 +21,7 @@ client = docker.from_env()
 
 
 def docker_environment_decorator(func):
-	
 	def wrapped_with_decorator(*args):
-		
-		print ("host {} {} {}".format(FUNCTIONS_FILE, func.__name__, " ".join([str(arg) for arg in args])))
-		
 		run_pycode = 'python {} {} {}'.format(FUNCTIONS_FILE, func.__name__, " ".join([str(arg) for arg in args]))
 		
 		if not container_counter.increment():
@@ -38,13 +35,13 @@ def docker_environment_decorator(func):
 			mem_limit=CONTAINER_MEMORY_LIMIT,
 			network_disabled=True,
 			# read only permission!
-			volumes={'{}/{}'.format(getcwd(),FUNCTIONS_FILE): {'bind': '/functions.py', 'mode': 'ro'}}
+			volumes={'{}/{}'.format(getcwd(), FUNCTIONS_FILE): {'bind': '/functions.py', 'mode': 'ro'}}
 		).decode('ascii').strip()
 		
 		container_counter.decrement()
 		
-		print("result from container.exec_run {}'".format(result))
-	
+		print("result from container: '{}'".format(result))
+		
 		return result
 	
 	return wrapped_with_decorator

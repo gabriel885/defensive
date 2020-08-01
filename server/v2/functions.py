@@ -95,7 +95,7 @@ try:
 	if sys.getsizeof(res) > MAX_RETURN_OBJECT_SIZE:
 		raise MemoryException("Memory response exceeded max allowed {} bytes".format(MAX_RETURN_OBJECT_SIZE))
 	print(res)
-	
+
 except MemoryException as e:
 	print(e)
 
