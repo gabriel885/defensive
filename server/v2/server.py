@@ -20,25 +20,24 @@ class RemoteCodeExecutionThreadedServer(SimpleXMLRPCServer):
 
 
 @docker_environment_decorator
-@disclose_exception_decorator
-@runtime_exception_decorator
+# @disclose_exception_decorator
+# @runtime_exception_decorator
 def add(x, y):
 	if type(x) is not int and type(y) is not int:
 		return 0
-	print("inside add")
 	return x + y
 
 
 @docker_environment_decorator
-@disclose_exception_decorator
-@runtime_exception_decorator
+# @disclose_exception_decorator
+# @runtime_exception_decorator
 def eval(expression):
 	return eval(expression)
 
 
 @docker_environment_decorator
-@disclose_exception_decorator
-@runtime_exception_decorator
+# @disclose_exception_decorator
+# @runtime_exception_decorator
 def divide(x, y):
 	if type(x) is not int and type(y) is not int:
 		return 0
@@ -49,8 +48,8 @@ def divide(x, y):
 
 
 @docker_environment_decorator
-@disclose_exception_decorator
-@runtime_exception_decorator
+# @disclose_exception_decorator
+# @runtime_exception_decorator
 def multiply(x, y):
 	if type(x) is not int and type(y) is not int:
 		return 0
@@ -58,12 +57,13 @@ def multiply(x, y):
 
 
 @docker_environment_decorator
-@disclose_exception_decorator
-@runtime_exception_decorator
+# @disclose_exception_decorator
+# @runtime_exception_decorator
 def sleep(n=0):
 	print("sleeping")
 	time.sleep(n)
 	print("finished sleeping")
+	return "finished sleeping"
 
 
 if __name__ == '__main__':

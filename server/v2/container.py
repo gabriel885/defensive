@@ -1,26 +1,44 @@
 # CREATING A CONTAINER SHOULD BE AN ATOMIC OPERATION
 
 import docker
-import yaml
+from exception import runtime_exception_decorator
 from atomic import AtomicCounter
+from os import getcwd
 
 # Docker container configurations
 PYTHON_DOCKER_IMAGE = "python:3"
 # PYTHON_DOCKER_IMAGE = "python:3.7-alpine"
 CONTAINER_MEMORY_LIMIT = '4m'  # 4 megabytes
 
-MAX_NUM_CONTAINERS = 5
+MAX_NUM_CONTAINERS = 3
 container_counter = AtomicCounter(MAX_NUM_CONTAINERS)
+
+FUNCTIONS_FILE = "functions.py"
 
 client = docker.from_env()
 
 
 def docker_environment_decorator(func):
+	
+	#@runtime_exception_decorator
 	def wrapped_with_decorator(*args):
 		
 		#serialized = yaml.dump({'py_code': func(*args)})
 		
-		run_pycode = 'python -c """print({})""" '.format(func(*args))
+		# import yaml
+		#run_pycode = 'python -c """print({})""" '.format(func(*args))
+		
+		#serialized = json.dumps(func(*args))
+		
+		# import inspect
+		# print(inspect.getsource(func))
+		#
+		# run_pycode = 'python -c """print({})""" '.format(func(*args))
+		#
+		
+		print ("host {} {} {}".format(FUNCTIONS_FILE, func.__name__, " ".join([str(arg) for arg in args])))
+		
+		run_pycode = 'python {} {} {}'.format(FUNCTIONS_FILE, func.__name__, " ".join([str(arg) for arg in args]))
 		
 		#install_pip = "python -m pip install yaml"
 		
@@ -47,6 +65,8 @@ def docker_environment_decorator(func):
 			auto_remove=True,
 			mem_limit=CONTAINER_MEMORY_LIMIT,
 			network_disabled=True,
+			# read only permission!
+			volumes={'{}/{}'.format(getcwd(),FUNCTIONS_FILE): {'bind': '/functions.py', 'mode': 'ro'}}
 		).decode('ascii')
 		
 		print("result from container.exec_run {}'".format(result))

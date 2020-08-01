@@ -23,11 +23,11 @@ class AtomicCounter:
 	
 	def decrement(self):
 		if self.value <= 0:
-			return False
+			return
 		
 		with self._lock:
 			self.value -= 1
-			return True
+		return
 	
 	def get(self):
 		return self.value

@@ -11,4 +11,3 @@ if __name__ == "__main__":
 	
 	print("Calling divide(64,8) method on server. Result {}".format(proxy.divide(64, 8)))
 	
-	print("Calling eval('sqrt(25)') method on server. Result {}".format(proxy.eval('sqrt(25)')))
