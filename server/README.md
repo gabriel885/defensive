@@ -36,7 +36,8 @@ Docker (v2 only)
 
 ```bash
 pip install -r requirements.txt
-python {version folder}/server.py
+python server.py # run version 1 from v1 folder
+python server.py # run version 2 from v2 folder
 ```
 
 Before running v2 server make sure docker is running!
