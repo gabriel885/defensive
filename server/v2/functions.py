@@ -3,18 +3,24 @@ import sys
 import time
 from contextlib import contextmanager
 
-# NOTE - printed values will be returned. Don't user print() explicitly.
+import consts
 
-DEFAULT_REASON_EXCEPTION = "Error occurred"
-FUNCTION_TIMEOUT = 5  # timeout in seconds
-MAX_RETURN_OBJECT_SIZE = 30  # limit max response size in bytes
+
+# NOTE - this file is ran inside a container. Return values are returned as stdout by calling 'print' function.
+# Please don't use print() if it is not intended to be returned.
 
 
 class TimeoutException(Exception):
+	"""
+	Timeout Exception of function execution
+	"""
 	pass
 
 
 class MemoryException(Exception):
+	"""
+	Memory Exception of function execution
+	"""
 	pass
 
 
@@ -24,7 +30,7 @@ class Decorators:
 		@contextmanager
 		def time_limit(seconds):
 			def signal_handler(signum, frame):
-				raise TimeoutException("Timed out! Max runtime is {} seconds".format(FUNCTION_TIMEOUT))
+				raise TimeoutException("Timed out! Max runtime is {} seconds".format(consts.FUNCTION_TIMEOUT))
 			
 			signal.signal(signal.SIGALRM, signal_handler)
 			signal.alarm(seconds)
@@ -35,15 +41,14 @@ class Decorators:
 		
 		def wrap_function_with_timeout(*args, **kwargs):
 			try:
-				with time_limit(FUNCTION_TIMEOUT):
+				## wait max function timeout for function execution
+				with time_limit(consts.FUNCTION_TIMEOUT):
 					return func(*args)
 			except TimeoutException as e:  # raise timeout exception
 				print(e)
 			pass
 		
 		return wrap_function_with_timeout
-	
-	pass
 
 
 @Decorators.runtime_exception_decorator
@@ -91,9 +96,9 @@ funcs = {
 }
 
 try:
-	res = funcs[sys.argv[1]](*sys.argv[2:])
-	if sys.getsizeof(res) > MAX_RETURN_OBJECT_SIZE:
-		raise MemoryException("Memory response exceeded max allowed {} bytes".format(MAX_RETURN_OBJECT_SIZE))
+	res = funcs[sys.argv[1]](*sys.argv[2:])  # map function with params
+	if sys.getsizeof(res) > consts.MAX_RETURN_OBJECT_SIZE:  # check if returned size does not exceed allowed return size
+		raise MemoryException("Memory response exceeded max allowed {} bytes".format(consts.MAX_RETURN_OBJECT_SIZE))
 	print(res)
 
 except MemoryException as e:
@@ -103,4 +108,4 @@ except TimeoutException as e:
 	print(e)
 
 except Exception as e:
-	print(DEFAULT_REASON_EXCEPTION)
+	print(consts.DEFAULT_REASON_EXCEPTION)

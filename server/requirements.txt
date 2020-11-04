@@ -1,4 +1,4 @@
 ## v1 does not make use of external libraries
-
-## v2 requirements
+aiohttp
+## v1/v2 requirements
 docker

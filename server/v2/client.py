@@ -14,3 +14,5 @@ if __name__ == "__main__":
 	print("Calling multiply(42,21) method on server. Result {}".format(proxy.multiply(42, 21)))
 	
 	print("Calling divide(64,8) method on server. Result {}".format(proxy.divide(64, 8)))
+	
+	print("Calling sleep(10) method on server. Result {}".format(proxy.sleep(10)))

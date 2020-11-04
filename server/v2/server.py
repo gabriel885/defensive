@@ -46,8 +46,6 @@ class AuthRequestHandler(SimpleXMLRPCRequestHandler):
 				return False
 			except Exception as _:
 				return False
-	
-	pass
 
 
 class RemoteCodeExecutionThreadedServer(SimpleXMLRPCServer):
@@ -65,7 +63,7 @@ class RemoteCodeExecutionThreadedServer(SimpleXMLRPCServer):
 
 
 @docker_environment_decorator
-def add(x, y) -> int:
+def add(x: int, y: int) -> int:
 	""" adding 2 numbers and returning sum"""
 	pass
 
@@ -77,13 +75,13 @@ def eval(expression):
 
 
 @docker_environment_decorator
-def divide(x, y) -> int:
+def divide(x: int, y: int) -> int:
 	""" dividing x by y and return answer"""
 	pass
 
 
 @docker_environment_decorator
-def multiply(x, y) -> int:
+def multiply(x: int, y: int) -> int:
 	""" multiply x by y and return answer """
 	pass
 

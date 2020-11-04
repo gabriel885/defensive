@@ -1,43 +1,42 @@
-# CREATING A CONTAINER SHOULD BE AN ATOMIC OPERATION
-
-from os import chmod, getcwd
+from os import chmod, getcwd, path
 
 import docker
+
+import consts
 from atomic import AtomicCounter
 
-# Docker container configurations
-PYTHON_DOCKER_IMAGE = "python:3"
-CONTAINER_MEMORY_LIMIT = '4m'  # 4 megabytes
+container_counter = AtomicCounter(consts.MAX_NUM_CONTAINERS)  # count how many containers are currently running
+chmod(consts.FUNCTIONS_FILE, 0o400)  # set functions.py file with read-only permission
 
-MAX_NUM_CONTAINERS = 3
-container_counter = AtomicCounter(MAX_NUM_CONTAINERS)
-
-FUNCTIONS_FILE = "functions.py"
-# read-only
-chmod(FUNCTIONS_FILE, 0o400)
-
-client = docker.from_env()
+client = docker.from_env()  # instantiate docker client instance
 
 
-def docker_environment_decorator(func):
+def docker_environment_decorator(func):  # receive function and function arguments to run inside a container
 	def wrapped_with_decorator(*args):
-		run_pycode = 'python {} {} {}'.format(FUNCTIONS_FILE, func.__name__, " ".join([str(arg) for arg in args]))
+		# command to execute inside the container
+		run_pycode = 'python {} {} {}'.format(
+			consts.FUNCTIONS_FILE, func.__name__, " ".join([str(arg) for arg in args]))
 		
-		if not container_counter.increment():
+		if not container_counter.increment():  # check if another container can be ran
 			return "Cannot execute code, max number of resources exceeded. Try again later..."
 		
+		# execute command inside a container. Bind with read-only mode function.py file
+		# running container is synchronous until the result is received from the container as stdout
 		result = client.containers.run(
-			image=PYTHON_DOCKER_IMAGE,
-			command=run_pycode,
-			privileged=False,
-			auto_remove=True,
-			mem_limit=CONTAINER_MEMORY_LIMIT,
-			network_disabled=True,
-			# read only permission!
-			volumes={'{}/{}'.format(getcwd(), FUNCTIONS_FILE): {'bind': '/functions.py', 'mode': 'ro'}}
-		).decode('ascii').strip()
+			image=consts.PYTHON_DOCKER_IMAGE,  # image of the container
+			command=run_pycode,  # command to run inside the container
+			privileged=False,  # user running command inside the container is not privileged
+			auto_remove=True,  # remove container after running is completed
+			mem_limit=consts.CONTAINER_MEMORY_LIMIT,
+			network_disabled=True,  # disable container network
+			# grant read only permissions for binded functions.py file!
+			volumes={'{}/{}'.format(getcwd(), consts.FUNCTIONS_FILE): {
+				'bind': path.join(consts.ROOT_DIR, consts.FUNCTIONS_FILE), 'mode': 'ro'},
+				'{}/{}'.format(getcwd(), consts.CONSTS_FILE): {
+					'bind': path.join(consts.ROOT_DIR, consts.CONSTS_FILE), 'mode': 'ro'}}
+		).decode('utf-8').strip()  # decode stdout
 		
-		container_counter.decrement()
+		container_counter.decrement()  # decrement total number of running containers
 		
 		print("result from container: '{}'".format(result))
 		

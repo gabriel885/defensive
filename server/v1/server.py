@@ -1,5 +1,6 @@
+from time import sleep
 from xmlrpc.server import SimpleXMLRPCServer
-from math import * ## don't remove, this is used by eval()
+
 
 class XMLRPCServer(SimpleXMLRPCServer):
 	
@@ -33,6 +34,10 @@ class XMLRPCServer(SimpleXMLRPCServer):
 	
 	def expose_multiply(self, x, y):
 		return x * y
+	
+	def expose_sleep(self, n):
+		# imitates heavy operation that takes resources from server
+		sleep(n)
 
 
 if __name__ == '__main__':
@@ -41,4 +46,3 @@ if __name__ == '__main__':
 	
 	server = XMLRPCServer(HOST, PORT)
 	server.run()
-	pass
