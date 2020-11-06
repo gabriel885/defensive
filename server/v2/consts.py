@@ -7,4 +7,4 @@ ROOT_DIR = '/'
 
 DEFAULT_REASON_EXCEPTION = "Error occurred"
 FUNCTION_TIMEOUT = 5  # function timeout in seconds
-MAX_RETURN_OBJECT_SIZE = 30  # function return size max size limit in bytes
+MAX_RETURN_OBJECT_SIZE = 60  # function return size max size limit in bytes
